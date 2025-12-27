@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MockMate: AI Interview Coach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'base-surface': '#0A192F', // Deeper Navy
+              'action-teal': '#14C8B0', // Brighter, more energetic teal
+              'info-blue': '#38BDF8',   // Sky Blue
+              'accent-amber': '#FBBF24',// Soft Amber
+              'alert-coral': '#F86A6A', // Slightly richer coral
+              'text-primary': '#E6F1F8',  // Off-white for primary text
+              'text-secondary': '#A8B2D1'// Softer grey for secondary text
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              serif: ['Fraunces', 'serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;700&family=Inter:wght@400;600;700;800;900&display=swap');
+      body { 
+        background-color: #0A192F; 
+        color: #E6F1F8; 
+        margin: 0; 
+        font-family: 'Inter', sans-serif;
+      }
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(20, 200, 176, 0.2); border-radius: 10px; }
+      
+      .bg-executive {
+        background-image: linear-gradient(rgba(10, 25, 47, 0.75), rgba(10, 25, 47, 0.95)), url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+
+      .glass-premium {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(40px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .label-pill {
+        font-family: 'Inter', sans-serif;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: 800;
+        opacity: 0.5;
+      }
+
+      .heading-executive {
+        font-family: 'Fraunces', serif;
+        letter-spacing: -0.02em;
+      }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^11.3.11",
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "pdf-lib": "https://aistudiocdn.com/pdf-lib@^1.17.1",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
+    "pdfjs-dist": "https://aistudiocdn.com/pdfjs-dist@^4.5.0",
+    "cors": "https://esm.sh/cors@^2.8.5",
+    "express": "https://esm.sh/express@^5.2.1",
+    "dotenv": "https://esm.sh/dotenv@^17.2.3",
+    "helmet": "https://esm.sh/helmet@^8.1.0",
+    "morgan": "https://esm.sh/morgan@^1.10.1",
+    "firebase-admin": "https://esm.sh/firebase-admin@^13.6.0",
+    "buffer": "https://esm.sh/buffer@^6.0.3",
+    "express-rate-limit": "https://esm.sh/express-rate-limit@^8.2.1",
+    "firebase/": "https://esm.sh/firebase@^12.7.0/"
+  }
+}
+</script>
+</head>
+  <body class="font-sans text-text-primary bg-executive">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
