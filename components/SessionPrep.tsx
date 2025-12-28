@@ -167,6 +167,8 @@ const SessionPrep: React.FC<SessionPrepProps> = ({ onContextReady, context, onGo
             );
             setPlan(interviewPlan);
             setIsPlanReady(true);
+        } catch (err) {
+            console.error("Plan generation failed", err);
         } finally {
             setIsLoading(false);
         }
@@ -191,9 +193,9 @@ const SessionPrep: React.FC<SessionPrepProps> = ({ onContextReady, context, onGo
             <SessionBuilder 
                 jdInsights={plan.jdInsights} 
                 competencyWeights={Object.entries(plan.jdInsights?.competencyWeights || {}).map(([k,v]) => ({competency:k, weight:v as number}))} 
+                questionSet={plan.questionSet}
                 onAdjustSpecs={() => { audioService.playEnd(); setIsPlanReady(false); }}
                 onInitialize={handleStartSession}
-                // Passing extracted grounding links for web app listing
                 researchLinks={plan.researchLinks}
             />
         );
@@ -210,8 +212,11 @@ const SessionPrep: React.FC<SessionPrepProps> = ({ onContextReady, context, onGo
                     <FileDropZone onTextReady={setJdText} />
                 </div>
 
-                <div className="w-full text-left mb-8 px-2">
-                    <h3 className="text-action-teal font-bold text-lg tracking-tight">Your interview panel</h3>
+                <div className="w-full text-left mb-6 pl-4 border-l-2 border-action-teal/40">
+                    <h3 className="text-action-teal font-black text-xl uppercase tracking-widest leading-none">
+                        Your interview panel
+                    </h3>
+                    <p className="text-[10px] text-text-secondary font-bold uppercase tracking-widest opacity-40 mt-1.5">Selected experts for this rehearsal</p>
                 </div>
                 
                 <div className="w-full mb-12">

@@ -11,7 +11,6 @@ interface LandingPageProps {
 const FeatureCard: React.FC<{ icon: React.ReactNode, title: string, description: string }> = ({ icon, title, description }) => (
     <div className="bg-[#0A192F]/60 backdrop-blur-xl border border-white/5 rounded-[2rem] p-10 text-center flex flex-col items-center flex-1 transition-all hover:bg-[#0A192F]/80 group hover:border-white/20 hover:-translate-y-1 duration-500 shadow-2xl">
         <div className="w-16 h-16 rounded-full border border-[#F97316]/40 flex items-center justify-center mb-8 group-hover:border-action-teal/40 transition-colors bg-[#F97316]/10">
-            {/* The icon containers use the orange theme from the screenshot circles */}
             <div className="text-[#F97316]">
                 {icon}
             </div>
@@ -33,9 +32,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             
             {/* Header / Navbar */}
             <header className="w-full px-8 md:px-16 py-10 flex justify-between items-center z-50">
-                <Logo className="h-10 md:h-12 w-auto" />
+                <Logo className="h-12 md:h-16 w-auto" />
                 <div className="flex gap-4 items-center">
-                   {/* Optional top right icons could go here, matching browser bar in screenshot */}
                 </div>
             </header>
 
@@ -48,10 +46,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         transition={{ duration: 0.8, ease: "easeOut" }}
                         className="flex flex-col items-center"
                     >
-                        <h1 className="text-6xl md:text-[7.5rem] font-black text-white tracking-tighter leading-[1] drop-shadow-2xl">
-                            Don't just practice
+                        <h1 className="text-6xl md:text-[7.5rem] font-black text-white tracking-tighter leading-[0.9]">
+                            Don’t just practice
                         </h1>
-                        <h1 className="text-6xl md:text-[7.5rem] font-black text-action-teal tracking-tighter leading-[1] drop-shadow-2xl">
+                        <h1 className="text-6xl md:text-[7.5rem] font-black text-action-teal tracking-tighter leading-[1.1]">
                             Perform
                         </h1>
                     </motion.div>
@@ -62,18 +60,28 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         transition={{ delay: 0.4, duration: 1 }}
                         className="text-lg md:text-xl text-text-secondary mt-10 mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
                     >
-                        MockMate is your personal AI interview coach, providing real-time feedback and expert analysis to turn interview anxiety into confidence.
+                        Master your next high-stakes conversation with personalized AI coaching designed to build lasting professional confidence.
                     </motion.p>
 
-                    <motion.button 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-                        onClick={onGetStarted}
-                        className="group relative bg-action-teal hover:bg-opacity-90 text-base-surface font-black py-5 px-14 rounded-xl text-sm uppercase tracking-widest transition-all shadow-xl hover:-translate-y-1 active:scale-95 overflow-hidden"
-                    >
-                        Start Your Free Session
-                    </motion.button>
+                    <div className="flex flex-col items-center">
+                        <motion.button 
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
+                            onClick={onGetStarted}
+                            className="group relative bg-action-teal hover:bg-opacity-90 text-base-surface font-black py-5 px-14 rounded-xl text-sm uppercase tracking-widest transition-all shadow-xl hover:-translate-y-1 active:scale-95 overflow-hidden"
+                        >
+                            Start Your Free Session
+                        </motion.button>
+                        <motion.span 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.4 }}
+                            transition={{ delay: 1, duration: 1 }}
+                            className="mt-5 text-[10px] font-black text-text-secondary uppercase tracking-[0.2em]"
+                        >
+                            No credit card • 5-minute setup
+                        </motion.span>
+                    </div>
                 </div>
 
                 {/* Features Grid */}

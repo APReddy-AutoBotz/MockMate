@@ -14,7 +14,6 @@ type Status = 'idle' | 'recording' | 'transcribing' | 'reviewing' | 'error';
 const PushToTalkInput: React.FC<PushToTalkInputProps> = ({ onTranscriptSubmit, disabled }) => {
     const [status, setStatus] = useState<Status>('idle');
     const [error, setError] = useState<string | null>(null);
-    const [localTranscript, setLocalTranscript] = useState<string>('');
     
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
@@ -24,7 +23,6 @@ const PushToTalkInput: React.FC<PushToTalkInputProps> = ({ onTranscriptSubmit, d
         if (status !== 'idle' && status !== 'error') return;
         
         setError(null);
-        setLocalTranscript('');
         
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -47,7 +45,7 @@ const PushToTalkInput: React.FC<PushToTalkInputProps> = ({ onTranscriptSubmit, d
             mediaRecorder.start();
             setStatus('recording');
         } catch (err) {
-            setError("Microphone access required.");
+            setError("Microphone Authorization Required.");
             setStatus('error');
             setTimeout(() => setStatus('idle'), 3000);
         }
@@ -61,7 +59,7 @@ const PushToTalkInput: React.FC<PushToTalkInputProps> = ({ onTranscriptSubmit, d
                 onTranscriptSubmit(transcript);
                 setStatus('idle');
             } else {
-                setError("No voice detected.");
+                setError("No Signal Detected.");
                 setStatus('error');
                 setTimeout(() => setStatus('idle'), 2000);
             }
@@ -78,23 +76,22 @@ const PushToTalkInput: React.FC<PushToTalkInputProps> = ({ onTranscriptSubmit, d
     };
 
     return (
-        <div className="flex flex-col items-center gap-4 w-full">
+        <div className="flex flex-col items-center gap-6 w-full">
             <div className="relative group">
-                {/* Waveform Animation Background */}
                 <AnimatePresence>
                     {status === 'recording' && (
                         <>
                             <motion.div 
-                                initial={{ scale: 1, opacity: 0.5 }}
-                                animate={{ scale: 1.6, opacity: 0 }}
-                                transition={{ repeat: Infinity, duration: 1.5 }}
-                                className="absolute inset-0 rounded-full bg-alert-coral/20"
+                                initial={{ scale: 1, opacity: 0.4 }}
+                                animate={{ scale: 2, opacity: 0 }}
+                                transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
+                                className="absolute inset-0 rounded-full bg-info-blue/20"
                             />
                             <motion.div 
-                                initial={{ scale: 1, opacity: 0.8 }}
-                                animate={{ scale: 1.3, opacity: 0 }}
-                                transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }}
-                                className="absolute inset-0 rounded-full bg-alert-coral/10"
+                                initial={{ scale: 1, opacity: 0.6 }}
+                                animate={{ scale: 1.5, opacity: 0 }}
+                                transition={{ repeat: Infinity, duration: 1.5, ease: "easeOut", delay: 0.4 }}
+                                className="absolute inset-0 rounded-full bg-info-blue/10"
                             />
                         </>
                     )}
@@ -108,27 +105,27 @@ const PushToTalkInput: React.FC<PushToTalkInputProps> = ({ onTranscriptSubmit, d
                     onTouchEnd={stopRecording}
                     disabled={disabled || status === 'transcribing'}
                     className={`
-                        relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500
-                        ${status === 'recording' ? 'bg-alert-coral shadow-2xl shadow-alert-coral/40 scale-110' : 
-                          status === 'transcribing' ? 'bg-info-blue/20' : 
-                          'bg-action-teal hover:scale-105 active:scale-95'}
-                        disabled:opacity-50 text-base-surface z-10
+                        relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-700
+                        ${status === 'recording' ? 'bg-info-blue shadow-[0_0_50px_rgba(56,189,248,0.4)] scale-110' : 
+                          status === 'transcribing' ? 'bg-white/[0.05] border border-white/10' : 
+                          'bg-white/[0.02] border border-white/10 hover:border-info-blue/40 hover:bg-info-blue/5 hover:scale-105 active:scale-95'}
+                        disabled:opacity-50 text-white z-10 backdrop-blur-3xl
                     `}
                 >
                     {status === 'transcribing' ? (
-                        <div className="animate-spin h-7 w-7 border-4 border-action-teal border-t-transparent rounded-full" />
+                        <div className="animate-spin h-8 w-8 border-[3px] border-info-blue border-t-transparent rounded-full" />
                     ) : (
-                        <MicrophoneIcon className={`w-9 h-9 transition-transform ${status === 'recording' ? 'scale-110 text-white' : 'text-base-surface'}`} />
+                        <MicrophoneIcon className={`w-10 h-10 transition-all duration-500 ${status === 'recording' ? 'scale-110 text-base-surface' : 'text-info-blue opacity-80'}`} />
                     )}
                 </button>
             </div>
 
-            <div className="text-center h-5">
-                <p className={`text-[11px] font-bold tracking-tight transition-all duration-300 ${status === 'recording' ? 'text-alert-coral' : 'text-text-secondary/80'}`}>
-                    {status === 'idle' && "Hold to speak"}
-                    {status === 'recording' && "Capturing voice..."}
-                    {status === 'transcribing' && "Analyzing response..."}
-                    {status === 'error' && (error || "Recording failed")}
+            <div className="text-center h-6">
+                <p className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all duration-500 ${status === 'recording' ? 'text-info-blue' : 'text-text-secondary opacity-30'}`}>
+                    {status === 'idle' && "Hold To Speak"}
+                    {status === 'recording' && "Capturing Presence"}
+                    {status === 'transcribing' && "Syncing Voice Data"}
+                    {status === 'error' && (error || "Link Failure")}
                 </p>
             </div>
         </div>

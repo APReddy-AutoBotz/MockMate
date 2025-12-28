@@ -38,18 +38,14 @@ export interface SessionControls {
 }
 
 export interface JDInsights {
-    source: 'realJD' | 'genericProfile' | 'questionBank';
+    source: 'realJD' | 'genericProfile' | 'questionBank' | 'attachment';
     mustHaveSkills: string[];
     niceToHave: string[];
     domains: string[];
     tools: string[];
     softSkills: string[];
     competencyWeights: {
-        domainKnowledge: number;
-        methodsTools: number;
-        processCompliance: number;
-        scenarioDecision: number;
-        behavioralComms: number;
+        [key: string]: number;
     };
 }
 

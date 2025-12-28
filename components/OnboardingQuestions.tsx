@@ -9,47 +9,42 @@ interface OnboardingQuestionsProps {
 
 type ExperienceLevel = 'entry' | 'mid' | 'senior' | 'lead';
 
-const experienceOptions: { id: ExperienceLevel; label: string; description: string }[] = [
-    { id: 'entry', label: 'Entry-Level', description: 'Early career or career pivot.' },
-    { id: 'mid', label: 'Mid-Career', description: 'Established professional experience.' },
-    { id: 'senior', label: 'Senior / Staff', description: 'Deep specialized expertise.' },
-    { id: 'lead', label: 'Lead / Executive', description: 'Strategic leadership and management.' },
+const experienceOptions: { id: ExperienceLevel; label: string }[] = [
+    { id: 'entry', label: 'Entry-Level' },
+    { id: 'mid', label: 'Mid-Career' },
+    { id: 'senior', label: 'Senior / Staff' },
+    { id: 'lead', label: 'Lead / Executive' },
 ];
 
 const OnboardingQuestions: React.FC<OnboardingQuestionsProps> = ({ onComplete }) => {
     const [step, setStep] = useState(1);
-    const [name, setName] = useState('');
     const [experience, setExperience] = useState<ExperienceLevel | null>(null);
     const [targetRole, setTargetRole] = useState('');
-    const [companyName, setCompanyName] = useState('');
-    const [companyUrl, setCompanyUrl] = useState('');
 
     const handleNext = () => setStep(s => s + 1);
 
     const handleFinalSelection = (sessionType: 'structured' | 'conversational') => {
         const profile: UserProfile = {
-            name: name || 'Candidate',
+            name: 'Candidate', // Default placeholder to keep flow minimal
             experienceLevel: experience || 'mid',
-            primaryGoal: 'specific_interview',
-            companyName,
-            companyUrl
+            primaryGoal: 'specific_interview'
         };
         onComplete(profile, targetRole, sessionType);
     };
 
     const stepVariants = {
-        initial: { opacity: 0, scale: 0.98, filter: 'blur(4px)' },
-        animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
-        exit: { opacity: 0, scale: 1.02, filter: 'blur(8px)' },
+        initial: { opacity: 0, y: 15, filter: 'blur(10px)' },
+        animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+        exit: { opacity: 0, y: -15, filter: 'blur(15px)' },
     };
 
     const ProgressBar = () => (
-        <div className="w-full flex justify-center mb-16">
-            <div className="flex gap-4">
-                {[1, 2, 3, 4].map((i) => (
+        <div className="w-full flex justify-center mb-20">
+            <div className="flex gap-6">
+                {[1, 2, 3].map((i) => (
                     <div 
                         key={i} 
-                        className={`h-1 rounded-full transition-all duration-1000 ease-in-out ${step >= i ? 'w-12 bg-action-teal shadow-[0_0_15px_rgba(20,200,176,0.5)]' : 'w-3 bg-white/10'}`} 
+                        className={`h-0.5 rounded-full transition-all duration-700 ease-out ${step >= i ? 'w-16 bg-action-teal shadow-[0_0_10px_rgba(20,200,176,0.3)]' : 'w-4 bg-white/5'}`} 
                     />
                 ))}
             </div>
@@ -57,126 +52,85 @@ const OnboardingQuestions: React.FC<OnboardingQuestionsProps> = ({ onComplete })
     );
 
     return (
-        <div className="w-full max-w-3xl mx-auto px-6">
+        <div className="w-full max-w-4xl mx-auto px-6">
             <ProgressBar />
             
             <AnimatePresence mode="wait">
                 {step === 1 && (
                     <motion.div key="step1" {...stepVariants} className="text-center">
-                        <h2 className="text-5xl font-serif font-bold text-white mb-4 tracking-tight">Identity Calibration</h2>
-                        <p className="text-text-secondary mb-12 font-medium">How should we address you in the rehearsal environment?</p>
-                        <form onSubmit={(e) => { e.preventDefault(); handleNext(); }} className="flex flex-col items-center">
-                            <input 
-                                type="text"
-                                placeholder="Candidate Name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="w-full max-w-md bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-2xl py-6 px-8 text-3xl text-center text-white placeholder:text-white/10 focus:border-action-teal/40 outline-none transition-all shadow-2xl font-sans"
-                                autoFocus
-                                required
-                            />
-                            <button 
-                                type="submit"
-                                className="mt-12 bg-action-teal text-base-surface font-bold py-5 px-16 rounded-full hover:shadow-[0_0_40px_rgba(20,200,176,0.3)] hover:-translate-y-1 transition-all disabled:opacity-20 label-mono"
-                                disabled={!name.trim()}
-                            >
-                                Synchronize
-                            </button>
-                        </form>
-                    </motion.div>
-                )}
-
-                {step === 2 && (
-                    <motion.div key="step2" {...stepVariants}>
-                        <div className="text-center mb-12">
-                            <h2 className="text-5xl font-serif font-bold text-white mb-4 tracking-tight">Experience Tier</h2>
-                            <p className="text-text-secondary font-medium">Select your professional standing to calibrate session difficulty.</p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <header className="mb-16">
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 tracking-tight">Your current standing</h2>
+                            <p className="text-text-secondary text-base font-medium opacity-60">Select your professional level to calibrate the session intensity.</p>
+                        </header>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                             {experienceOptions.map(opt => (
                                 <button 
                                     key={opt.id} 
                                     onClick={() => { setExperience(opt.id); handleNext(); }}
-                                    className="text-left p-10 bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-[2rem] hover:border-action-teal/30 hover:bg-white/[0.05] transition-all group relative overflow-hidden"
+                                    className="text-center p-8 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-2xl hover:border-action-teal/40 hover:bg-white/[0.05] transition-all group"
                                 >
-                                    <h3 className="font-bold text-white text-xl mb-2 group-hover:text-action-teal transition-colors font-sans">{opt.label}</h3>
-                                    <p className="text-sm text-text-secondary leading-relaxed font-medium opacity-70">{opt.description}</p>
+                                    <h3 className="font-bold text-white text-lg group-hover:text-action-teal transition-colors tracking-tight">{opt.label}</h3>
                                 </button>
                             ))}
                         </div>
                     </motion.div>
                 )}
 
-                {step === 3 && (
-                    <motion.div key="step3" {...stepVariants} className="text-center">
-                        <h2 className="text-5xl font-serif font-bold text-white mb-4 tracking-tight">Target Role & Company</h2>
-                        <p className="text-text-secondary mb-12 font-medium">Define the objective for precise environment grounding.</p>
-                        <form onSubmit={(e) => { e.preventDefault(); handleNext(); }} className="flex flex-col items-center gap-6 w-full">
+                {step === 2 && (
+                    <motion.div key="step2" {...stepVariants} className="text-center">
+                        <header className="mb-16">
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 tracking-tight">Set your intention</h2>
+                            <p className="text-text-secondary text-base font-medium opacity-60">What role are we preparing for today?</p>
+                        </header>
+                        <form onSubmit={(e) => { e.preventDefault(); handleNext(); }} className="flex flex-col items-center gap-10 w-full">
                             <textarea 
-                                placeholder="e.g. Senior RPA Business Analyst"
+                                placeholder="e.g. Senior Product Designer"
                                 value={targetRole}
                                 onChange={(e) => setTargetRole(e.target.value)}
-                                className="w-full max-w-xl bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-10 text-3xl text-center text-white placeholder:text-white/10 focus:border-action-teal/40 outline-none transition-all h-48 resize-none shadow-2xl leading-tight font-sans"
+                                className="w-full max-w-2xl bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[2rem] p-10 text-3xl text-center text-white placeholder:text-white/5 focus:border-action-teal/40 outline-none transition-all h-40 resize-none shadow-2xl leading-tight font-sans font-bold"
                                 autoFocus
                                 required
                             />
                             
-                            <div className="w-full max-w-xl grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div className="relative group">
-                                    <input 
-                                        type="text"
-                                        placeholder="Company Name"
-                                        value={companyName}
-                                        onChange={(e) => setCompanyName(e.target.value)}
-                                        className="w-full bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl px-8 py-5 text-lg text-white placeholder:text-white/20 focus:border-action-teal/40 outline-none transition-all font-sans"
-                                    />
-                                    <span className="absolute -top-3 left-6 px-2 bg-[#0A192F] text-[9px] label-mono text-white/30 opacity-0 group-focus-within:opacity-100 transition-opacity">Grounding Target</span>
-                                </div>
-                                <div className="relative group">
-                                    <input 
-                                        type="text"
-                                        placeholder="Company URL (Optional)"
-                                        value={companyUrl}
-                                        onChange={(e) => setCompanyUrl(e.target.value)}
-                                        className="w-full bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl px-8 py-5 text-lg text-white placeholder:text-white/20 focus:border-action-teal/40 outline-none transition-all font-sans"
-                                    />
-                                    <span className="absolute -top-3 left-6 px-2 bg-[#0A192F] text-[9px] label-mono text-white/30 opacity-0 group-focus-within:opacity-100 transition-opacity">Intelligence Source</span>
-                                </div>
-                            </div>
-
                             <button 
                                 type="submit"
-                                className="mt-8 bg-action-teal text-base-surface font-bold py-6 px-20 rounded-full hover:shadow-[0_0_50px_rgba(20,200,176,0.4)] hover:-translate-y-1 transition-all disabled:opacity-20 label-mono text-xs"
+                                className="bg-action-teal text-base-surface font-black py-5 px-16 rounded-xl hover:shadow-[0_20px_40px_rgba(20,200,176,0.2)] hover:-translate-y-0.5 transition-all disabled:opacity-20 text-[11px] uppercase tracking-[0.2em]"
                                 disabled={!targetRole.trim()}
                             >
-                                Confirm Strategic Targets
+                                Continue
                             </button>
                         </form>
                     </motion.div>
                 )}
 
-                {step === 4 && (
-                    <motion.div key="step4" {...stepVariants}>
-                        <div className="text-center mb-12">
-                            <h2 className="text-5xl font-serif font-bold text-white mb-4 tracking-tight">Engagement Protocol</h2>
-                            <p className="text-text-secondary font-medium">Select the interface protocol for this session.</p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {step === 3 && (
+                    <motion.div key="step3" {...stepVariants} className="text-center">
+                        <header className="mb-16">
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 tracking-tight">Choose your protocol</h2>
+                            <p className="text-text-secondary text-base font-medium opacity-60">How would you like to engage with the AI panel?</p>
+                        </header>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
                             <button 
                                 onClick={() => handleFinalSelection('structured')}
-                                className="p-12 bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-[3rem] hover:border-info-blue/40 hover:bg-white/[0.05] text-left transition-all group"
+                                className="p-10 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[2.5rem] hover:border-info-blue/40 hover:bg-white/[0.05] text-left transition-all group h-full flex flex-col justify-between"
                             >
-                                <div className="text-[10px] label-mono text-info-blue mb-6 border border-info-blue/20 w-fit px-3 py-1 rounded">Protocol Alpha</div>
-                                <h3 className="text-2xl font-bold text-white mb-4 font-sans">Structured Blueprint</h3>
-                                <p className="text-sm text-text-secondary leading-relaxed font-medium opacity-70">A methodology-driven rehearsal based on a predefined strategic plan.</p>
+                                <div className="space-y-4">
+                                    <div className="text-[9px] font-black text-info-blue uppercase tracking-widest border border-info-blue/20 w-fit px-3 py-1 rounded">Protocol Alpha</div>
+                                    <h3 className="text-xl font-bold text-white font-sans">Structured Blueprint</h3>
+                                    <p className="text-sm text-text-secondary leading-relaxed font-medium opacity-60">A methodical approach with a predefined roadmap. Best for precision practice.</p>
+                                </div>
+                                <span className="mt-8 text-[9px] font-black text-white/20 uppercase tracking-widest group-hover:text-info-blue transition-colors">Select &rarr;</span>
                             </button>
                             <button 
                                 onClick={() => handleFinalSelection('conversational')}
-                                className="p-12 bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-[3rem] hover:border-action-teal/40 hover:bg-white/[0.05] text-left transition-all group"
+                                className="p-10 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[2.5rem] hover:border-action-teal/40 hover:bg-white/[0.05] text-left transition-all group h-full flex flex-col justify-between"
                             >
-                                <div className="text-[10px] label-mono text-action-teal mb-6 border border-action-teal/20 w-fit px-3 py-1 rounded">Protocol Beta</div>
-                                <h3 className="text-2xl font-bold text-white mb-4 font-sans">The Dynamic Arena</h3>
-                                <p className="text-sm text-text-secondary leading-relaxed font-medium opacity-70">A reactive, high-stakes environment that evolves in real-time based on your input.</p>
+                                <div className="space-y-4">
+                                    <div className="text-[9px] font-black text-action-teal uppercase tracking-widest border border-action-teal/20 w-fit px-3 py-1 rounded">Protocol Beta</div>
+                                    <h3 className="text-xl font-bold text-white font-sans">Dynamic Arena</h3>
+                                    <p className="text-sm text-text-secondary leading-relaxed font-medium opacity-60">An unscripted, adaptive environment that evolves with your responses.</p>
+                                </div>
+                                <span className="mt-8 text-[9px] font-black text-white/20 uppercase tracking-widest group-hover:text-action-teal transition-colors">Select &rarr;</span>
                             </button>
                         </div>
                     </motion.div>

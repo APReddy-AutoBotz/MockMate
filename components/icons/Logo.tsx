@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,7 +17,7 @@ export const Logo = ({ className = '', iconOnly = false, ...props }: LogoProps) 
     return (
         <div className={`flex items-center ${className}`} {...props}>
             <svg
-                viewBox={iconOnly ? "0 0 512 512" : "0 0 2800 512"}
+                viewBox={iconOnly ? "0 0 512 512" : "0 0 3000 512"}
                 xmlns="http://www.w3.org/2000/svg"
                 role="img"
                 aria-label="MockMate Logo"
@@ -49,9 +50,9 @@ export const Logo = ({ className = '', iconOnly = false, ...props }: LogoProps) 
                     <polygon points="244,285 268,285 256,360" fill="url(#tieGradient)" />
                 </g>
 
-                {/* WORDMARK - Optimized spacing for premium appearance */}
+                {/* WORDMARK - Increased spacing to 900 for premium balance */}
                 {!iconOnly && (
-                    <g transform="translate(740, 275)">
+                    <g transform="translate(900, 275)">
                         {/* 'Mock' - Heavy White */}
                         <text 
                             x="0" 

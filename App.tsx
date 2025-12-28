@@ -16,6 +16,7 @@ import OnboardingQuestions from './components/OnboardingQuestions';
 import GrowthDashboard from './components/GrowthDashboard';
 import { saveSessionToHistory } from './services/storageService';
 import { audioService } from './services/audioService';
+import { auth, signOut } from './services/firebaseClient';
 
 type AppState = 'LOADING' | 'LANDING' | 'LOGIN' | 'ONBOARDING' | 'ROLE_SELECTION' | 'CONTEXT_UPLOAD' | 'SESSION_ACTIVE' | 'REPORT_VIEW' | 'HISTORY_VIEW';
 
@@ -26,18 +27,23 @@ const App: React.FC = () => {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
     useEffect(() => {
-        try {
-            const storedProfile = localStorage.getItem('mockmate_user_profile');
-            if (storedProfile) {
-                setUserProfile(JSON.parse(storedProfile));
-                setAppState('ROLE_SELECTION');
+        // Use the auth listener to determine starting state
+        const unsubscribe = auth.onAuthStateChanged((user: any) => {
+            if (user) {
+                const storedProfile = localStorage.getItem('mockmate_user_profile');
+                if (storedProfile) {
+                    setUserProfile(JSON.parse(storedProfile));
+                    setAppState('ROLE_SELECTION');
+                } else {
+                    // Logged in but no profile -> Go to onboarding
+                    setUserProfile({ name: user.displayName || user.email.split('@')[0], experienceLevel: 'mid', primaryGoal: 'skill_building' });
+                    setAppState('ONBOARDING');
+                }
             } else {
                 setAppState('LANDING');
             }
-        } catch (error) {
-            console.error("Failed to parse user profile from localStorage", error);
-            setAppState('LANDING');
-        }
+        });
+        return () => unsubscribe();
     }, []);
     
     const handleGetStarted = () => {
@@ -46,7 +52,7 @@ const App: React.FC = () => {
     };
     const handleLogin = () => {
         audioService.playStart();
-        setAppState('ONBOARDING');
+        // The useEffect will handle the state shift based on onAuthStateChanged
     };
     const handleBackToLanding = () => setAppState('LANDING');
     
@@ -61,9 +67,7 @@ const App: React.FC = () => {
                 intentText: targetRole, 
                 selectedPanelIDs: [], 
                 sessionType: sessionType,
-                sessionMode: 'exam',
-                companyName: profile.companyName,
-                companyUrl: profile.companyUrl
+                sessionMode: 'exam'
             };
             setSessionContext(initialContext);
 
@@ -73,15 +77,16 @@ const App: React.FC = () => {
                 setAppState('SESSION_ACTIVE');
             }
         } catch (error) {
-            console.error("Failed to save user profile from localStorage", error);
+            console.error("Failed to save user profile", error);
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         try {
+            await signOut(auth);
             localStorage.removeItem('mockmate_user_profile');
         } catch (error) {
-            console.error("Failed to remove user profile from localStorage", error);
+            console.error("Failed to logout", error);
         }
         setUserProfile(null);
         setAppState('LANDING');
@@ -251,7 +256,7 @@ const App: React.FC = () => {
              {showAppHeader && (
                 <motion.header {...headerAnimation} className="absolute top-0 left-0 w-full px-12 py-10 flex justify-between items-center z-20 pointer-events-none">
                     <div onClick={handleRestart} className="cursor-pointer transition-transform hover:scale-[1.02] pointer-events-auto">
-                        <Logo className="h-14 w-auto" />
+                        <Logo className="h-16 w-auto" />
                     </div>
                     <div className="flex items-center gap-8 pointer-events-auto">
                         <button 
